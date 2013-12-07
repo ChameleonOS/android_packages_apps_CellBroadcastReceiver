@@ -180,9 +180,9 @@ public class CellBroadcastConfigService extends IntentService {
                 // set up broadcast ID ranges to be used for each category
                 int cmasExtremeStart =
                         SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_IMMEDIATE_OBSERVED;
-                int cmasExtremeEnd = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_EXPECTED_LIKELY;
+                int cmasExtremeEnd = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_IMMEDIATE_LIKELY;
                 int cmasSevereStart =
-                        SmsCbConstants.MESSAGE_ID_CMAS_ALERT_SEVERE_IMMEDIATE_OBSERVED;
+                        SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_EXPECTED_OBSERVED;
                 int cmasSevereEnd = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_SEVERE_EXPECTED_LIKELY;
                 int cmasAmber = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_CHILD_ABDUCTION_EMERGENCY;
                 int cmasTestStart = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_REQUIRED_MONTHLY_TEST;
@@ -269,15 +269,21 @@ public class CellBroadcastConfigService extends IntentService {
                 }
 
                 if (isCdma) {
-                    if (DBG) log("channel 50 is not aplicable for cdma");
+                    if (DBG) log("channel 50 is not applicable for cdma");
                 } else if (enableChannel50Alerts) {
                     if (DBG) log("enabling cell broadcast channel 50");
                     manager.enableCellBroadcast(50);
-                    if (DBG) log("enabled cell broadcast channel 50");
                 } else {
                     if (DBG) log("disabling cell broadcast channel 50");
                     manager.disableCellBroadcast(50);
-                    if (DBG) log("disabled cell broadcast channel 50");
+                }
+
+                if ("il".equals(tm.getSimCountryIso()) || "il".equals(tm.getNetworkCountryIso())) {
+                    if (DBG) log("enabling channels 919-928 for Israel");
+                    manager.enableCellBroadcastRange(919, 928);
+                } else {
+                    if (DBG) log("disabling channels 919-928");
+                    manager.disableCellBroadcastRange(919, 928);
                 }
 
                 // Disable per user preference/checkbox.
